@@ -2,8 +2,7 @@ import re
 import tweepy 
 from tweepy import OAuthHandler 
 from textblob import TextBlob 
-from sqlalchemy import create_engine
-db_connect = create_engine('sqlite:///app.db')
+from .AppConfigService import AppConfigService
 class TwitterClient(object): 
 	''' 
 	Generic Twitter Class for sentiment analysis. 
@@ -12,12 +11,14 @@ class TwitterClient(object):
 		''' 
 		Class constructor or initialization method. 
 		'''
-		conn = db_connect.connect()
+		CS = AppConfigService()
+		Config = CS.getTwitterDetails()
+		
 		# keys and tokens from the Twitter Dev Console 
-		consumer_key = 'K3jlCTAwQdhQ1j2gm7iYCN7dy'
-		consumer_secret = 'qqZkS2oYqVmojs7OGD8VJsTrRtyv39OpgFNZNVpKsETxesQsXu'
-		access_token = '1044251886390575104-J8adkCw7NnmD1lAZiAUJ9jF0bblJid'
-		access_token_secret = 'RvtkyctEbg02sY3kj7Fkx5Xez2lBwlhQGtMPNpG7i7stu'
+		consumer_key = Config[0]['2'] #'K3jlCTAwQdhQ1j2gm7iYCN7dy'
+		consumer_secret = Config[1]['2'] #'qqZkS2oYqVmojs7OGD8VJsTrRtyv39OpgFNZNVpKsETxesQsXu'
+		access_token = Config[2]['2'] #'1044251886390575104-J8adkCw7NnmD1lAZiAUJ9jF0bblJid'
+		access_token_secret = Config[3]['2'] #'RvtkyctEbg02sY3kj7Fkx5Xez2lBwlhQGtMPNpG7i7stu'
 
 		# attempt authentication 
 		try: 

@@ -2,10 +2,12 @@
 from flask_restful import Resource
 from flask import Flask, request, jsonify
 from json import dumps
-from .TwitterClientService import TwitterClient
+from .service import TwitterClientService
+
 class Sentiment(Resource):
     def post(self):
-        api = TwitterClient()
+        
+        api = TwitterClientService.TwitterClient()
         query = request.json['query']
         count = request.json['count']
         latitude = request.json['latitude']
