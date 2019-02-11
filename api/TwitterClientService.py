@@ -12,7 +12,7 @@ class TwitterClient(object):
 		''' 
 		Class constructor or initialization method. 
 		'''
-		conn = db_connect.connect()
+		
 		# keys and tokens from the Twitter Dev Console 
 		consumer_key = 'K3jlCTAwQdhQ1j2gm7iYCN7dy'
 		consumer_secret = 'qqZkS2oYqVmojs7OGD8VJsTrRtyv39OpgFNZNVpKsETxesQsXu'

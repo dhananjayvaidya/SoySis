@@ -1,6 +1,7 @@
 from flask_restful import Resource
 import logging as logger
 class Task(Resource):
+    
     def get(self):
         logger.debug("Inside get method")
         return {"message" : "Inside Get Method"},200

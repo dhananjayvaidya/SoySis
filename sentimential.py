@@ -1,8 +1,10 @@
 import re 
 import tweepy 
+import sys
 from tweepy import OAuthHandler 
 from textblob import TextBlob 
-
+import csv
+from datetime import datetime
 class TwitterClient(object): 
 	''' 
 	Generic Twitter Class for sentiment analysis. 
@@ -50,7 +52,7 @@ class TwitterClient(object):
 		else: 
 			return 'negative'
 
-	def get_tweets(self, query, count = 10, geo = "37.090240,-95.712891,100mi",until="2017-01-01"): 
+	def get_tweets(self, query, count = 10, geo = "37.090240,-95.712891,100mi"): 
 		''' 
 		Main function to fetch tweets and parse them. 
 		'''
@@ -59,7 +61,7 @@ class TwitterClient(object):
 
 		try: 
 			# call twitter api to fetch tweets 
-			fetched_tweets = self.api.search(q = query, count = count,geocode = geo,until=until) 
+			fetched_tweets = self.api.search(q = query, count = count,geocode = geo) 
 
 			# parsing tweets one by one 
 			for tweet in fetched_tweets: 
@@ -90,32 +92,64 @@ def main():
 	# creating object of TwitterClient Class 
 	api = TwitterClient() 
 	# calling function to get tweets 
-	tweets = api.get_tweets(query = 'S&P 500,', count = 20000 ,geo = "32.776665,-96.796989,10mi",until="2018-12-20") 
+	print(sys.argv[1])
+	if sys.argv[1]:
+		q = sys.argv[1]
 	
-	# picking positive tweets from tweets 
-	ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive'] 
-	# percentage of positive tweets 
-	print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets))) 
-	
-	# picking negative tweets from tweets 
-	ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative'] 
-	# percentage of negative tweets
-	print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets))) 
-	
-	# picking neutral tweets from tweets
-	netweets = [tweet for tweet in tweets if tweet['sentiment'] == 'neutral']
-	# percentage of neutral tweets 
-	print("Neutral tweets percentage: {} %".format(100*len(netweets)/len(tweets)))
-        
-	# printing first 5 positive tweets 
-	print("\n\nPositive tweets:") 
-	for tweet in ptweets[:10]: 
-		print(tweet['text']) 
+	if sys.argv[2]:
+		c = sys.argv[2]
 
+	if sys.argv[3]:
+		lat = sys.argv[3]
+	if sys.argv[4]:
+		log = sys.argv[4]
+	if sys.argv[5]:
+		Jump = sys.argv[5]
+	#lat = 32.776665
+	#log = -96.796989
+	mit = 10
+	
+	for x in range(1,10):
+		mit = x*int(Jump)
+		Geo = str(lat)+","+str(log)+","+str(mit)+"mi"
+		print(Geo)
+		tweets = api.get_tweets(query = q, count = c ,geo = Geo) 
+		print("================ "+str(mit)+"Meters ================")
+		
+		# picking positive tweets from tweets 
+		ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive'] 
+		positiveCount = format(100*len(ptweets)/len(tweets))
+		# percentage of positive tweets 
+		print("Positive tweets percentage: {} %"+positiveCount) 
+
+		# picking negative tweets from tweets 
+		ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative'] 
+		negativeCount = format(100*len(ntweets)/len(tweets))
+		# percentage of negative tweets
+		print("Negative tweets percentage: {} %"+negativeCount) 
+
+		# picking neutral tweets from tweets
+		netweets = [tweet for tweet in tweets if tweet['sentiment'] == 'neutral']
+		neutralCount = format(100*len(netweets)/len(tweets))
+		# percentage of neutral tweets 
+		print("Neutral tweets percentage: {} %"+neutralCount)
+        
+		#setup row
+		print(type(positiveCount))
+		row = [str(x),str(round(float(positiveCount),2)),negativeCount,neutralCount]
+		with open(str(q)+"-"+str(datetime.date(datetime.now()))+".csv", 'a') as writeFile:
+			writer = csv.writer(writeFile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			writer.writerow(row)
+		writeFile.close()
+
+	# printing first 5 positive tweets 
+	#print("\n\nPositive tweets:") 
+	#for tweet in ptweets[:10]: 
+		#print(tweet['text']) 
 	# printing first 5 negative tweets 
-	print("\n\nNegative tweets:") 
-	for tweet in ntweets[:10]: 
-		print(tweet['text']) 
+	#print("\n\nNegative tweets:") 
+	#for tweet in ntweets[:10]: 
+		#print(tweet['text']) 
 
 if __name__ == "__main__": 
 	# calling main function 
