@@ -1,5 +1,5 @@
-# sentimentAnalysis
-Sentiment Analysis based on Twitter API
+# SoySis
+One Tool for Complete Social Analysis.
 
 <b>Installation</b><br>
 To install this script and execute, you need first download TextBlob and Tweepy Libraries. You can use `pip` utility or you can clone the git repo. And run installer. 
